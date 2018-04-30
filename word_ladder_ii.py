@@ -35,7 +35,7 @@ class Solution(object):
             is_transformation = True
         return is_transformation
 
-    def recover_paths(self, graph, u, source, paths, curr_path, max_path_length):
+    def recover_paths(self, graph, u, source, paths, curr_path, max_path_length, verbose = False):
         if u == source or len(curr_path) >= max_path_length:
             return
         my_path = curr_path[:]
@@ -44,6 +44,10 @@ class Solution(object):
         if neighbors is not None:
             if source in neighbors: #we made it to the source
                 curr_path.append(source)
+                paths.append(curr_path)
+                if verbose:
+                    print("valid path: {}".format(curr_path))
+                    print(paths)
             else:
                 for v in neighbors:
                     others = graph.get(v)
@@ -51,27 +55,30 @@ class Solution(object):
                     if curr_path[-1] != source and curr_path[-1] in others:
                         if v not in curr_path: # eliminate cycles
                             curr_path.append(v)
-                            self.recover_paths(graph, v, source, paths, curr_path, max_path_length)
+                            if verbose:
+                                print("extending an existing path: {}".format(curr_path))
+                            self.recover_paths(graph, v, source, paths, curr_path, max_path_length, verbose)
 
                     else:
                         # starting a new path
                         i = my_path.index(u)
                         curr_path = my_path[0:i+1]
+                        if verbose:
+                            print("starting a new path: {}".format(curr_path))
                         if v not in curr_path:  # eliminate cycles
                             curr_path.append(v)
-                            paths.append(curr_path)
+                            if verbose:
+                                print("added node: {}".format(curr_path))
                             # recursive call to extend the path
-                            self.recover_paths(graph, v, source, paths, curr_path, max_path_length)
+                            self.recover_paths(graph, v, source, paths, curr_path, max_path_length, verbose)
 
 
 
     def find_shortest_paths(self, graph, source, target):
         max_path_length = len(graph.keys())+1
         curr_path = [target]
-        paths = [curr_path]
+        paths = []
         self.recover_paths(graph, target, source, paths, curr_path, max_path_length)
-        print(graph)
-        print(paths)
         #filter invalid paths
         paths = [p for p in paths if (p[-1] == source and p[0] == target)]
         #find the minimal length
