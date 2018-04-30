@@ -8,6 +8,14 @@ You may assume no duplicates in the word list.
 You may assume beginWord and endWord are non-empty and are not the same.
 '''
 class Solution(object):
+
+    def description(self):
+        desc = "Solution to word-ladder-ii: " \
+               "First, create a graph whose vertices are the words in the list and the begin word." \
+               " Add an edge between two vertices if they are a 1-letter transformation of one another." \
+               " Then find the shortest paths from the source to the target."
+        return desc
+
     def is_transformation_of(self, word1, word2):
         """
         check if word2 is a transformation of word1
