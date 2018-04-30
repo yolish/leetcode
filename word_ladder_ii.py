@@ -38,6 +38,7 @@ class Solution(object):
     def recover_paths(self, graph, u, source, paths, curr_path, max_path_length):
         if u == source or len(curr_path) >= max_path_length:
             return
+        my_path = curr_path[:]
 
         neighbors = graph.get(u)
         if neighbors is not None:
@@ -45,17 +46,22 @@ class Solution(object):
                 curr_path.append(source)
             else:
                 for v in neighbors:
-                    if v not in curr_path:
-                        if curr_path[-1] != source:
+                    others = graph.get(v)
+                    # we need to start a new path if we've reached the source or a dead end
+                    if curr_path[-1] != source and curr_path[-1] in others:
+                        if v not in curr_path: # eliminate cycles
                             curr_path.append(v)
-                        else:
-                            # starting a new path
-                            i = curr_path.index(u)
-                            curr_path = curr_path[0:i+1]
+                            self.recover_paths(graph, v, source, paths, curr_path, max_path_length)
+
+                    else:
+                        # starting a new path
+                        i = my_path.index(u)
+                        curr_path = my_path[0:i+1]
+                        if v not in curr_path:  # eliminate cycles
                             curr_path.append(v)
                             paths.append(curr_path)
-                        # recursive call to extend the path
-                        self.recover_paths(graph, v, source, paths, curr_path, max_path_length)
+                            # recursive call to extend the path
+                            self.recover_paths(graph, v, source, paths, curr_path, max_path_length)
 
 
 
@@ -64,6 +70,8 @@ class Solution(object):
         curr_path = [target]
         paths = [curr_path]
         self.recover_paths(graph, target, source, paths, curr_path, max_path_length)
+        print(graph)
+        print(paths)
         #filter invalid paths
         paths = [p for p in paths if (p[-1] == source and p[0] == target)]
         #find the minimal length
@@ -92,7 +100,9 @@ class Solution(object):
             # with an edge between word w1 and
             # word w2 if w1 if they are a transformation of each other
             transformations_graph = {}
-            word_list.append(begin_word) # add the begin word
+            #word_list = word_list[:] uncomment to avoid changing the word list
+            if begin_word not in word_list:
+                word_list.append(begin_word) # add the begin word
             n = len(word_list)
             for i in xrange(n-1):
                 for j in xrange((i+1), n):
@@ -114,6 +124,7 @@ class Solution(object):
                     and transformations_graph.get(end_word) is not None:
                 shortest_transformations = self.find_shortest_paths(transformations_graph,
                                                                     begin_word, end_word)
+
         return shortest_transformations
 
 
