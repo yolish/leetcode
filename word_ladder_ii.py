@@ -13,7 +13,8 @@ class Solution(object):
         desc = "Solution to word-ladder-ii: " \
                "First, create a graph whose vertices are the words in the list and the begin word." \
                " Add an edge between two vertices if they are a 1-letter transformation of one another." \
-               " Then find the shortest paths from the source to the target."
+               " Then find the shortest paths from the source to the target using a generalized version of " \
+               " Dijkstra's algorithm followed by a recursive method to construct the paths."
         return desc
 
     def is_transformation_of(self, word1, word2):
@@ -35,60 +36,64 @@ class Solution(object):
             is_transformation = True
         return is_transformation
 
-    def recover_paths(self, graph, u, source, paths, curr_path, max_path_length, verbose = False):
-        if u == source or len(curr_path) >= max_path_length:
-            return
+    def construct_paths(self, tree, source, u, curr_path, paths, verbose):
         my_path = curr_path[:]
+        prev = tree.get(u)
+        if source in prev:
+            curr_path.append(source)
+            paths.append(curr_path)
+            if verbose:
+                print("path added: {}".format(curr_path))
+        else:
+            for v in prev:
+                prev_of_last = tree.get(curr_path[-1])
+                if curr_path[-1] != source and v in prev_of_last:
+                    curr_path.append(v)
+                    if verbose:
+                        print("extending an existing path: {}".format(curr_path))
+                else:
+                    # starting a new path
+                    i = my_path.index(u)
+                    curr_path = my_path[0:i + 1]
+                    if verbose:
+                        print("starting a new path: {} and adding node {}".format(curr_path, v))
+                    curr_path.append(v)
+                    # recursive call to extend the path
+                self.construct_paths(tree, source, v, curr_path, paths, verbose)
 
-        neighbors = graph.get(u)
-        if neighbors is not None:
-            if source in neighbors: #we made it to the source
-                curr_path.append(source)
-                paths.append(curr_path)
-                if verbose:
-                    print("valid path: {}".format(curr_path))
-                    print(paths)
-            else:
+
+    def find_shortest_paths(self, graph, source, target, verbose=False):
+        vertex_set = graph.keys()
+        max_length_path = len(vertex_set)+1
+        dist_to_source = {}
+        prev_in_path = {}
+        for v in vertex_set:
+            prev_in_path[v] = []
+            dist_to_source[v] = max_length_path
+
+        prev_in_path[source].append(source)
+        dist_to_source[source] = 0
+
+        while len(vertex_set) > 0:
+            min_dist = min([dist_to_source[v] for v in vertex_set])
+            closest_vertices = [v for v in vertex_set if dist_to_source[v] == min_dist]
+            #if target in closest_vertices:
+            #    break
+            for u in closest_vertices:
+                vertex_set.remove(u)
+            for u in closest_vertices:
+                alt_dist = min_dist + 1
+                neighbors = graph.get(u)
                 for v in neighbors:
-                    others = graph.get(v)
-                    # we need to start a new path if we've reached the source or a dead end
-                    if curr_path[-1] != source and curr_path[-1] in others:
-                        if v not in curr_path: # eliminate cycles
-                            curr_path.append(v)
-                            if verbose:
-                                print("extending an existing path: {}".format(curr_path))
-                            self.recover_paths(graph, v, source, paths, curr_path, max_path_length, verbose)
-
-                    else:
-                        # starting a new path
-                        i = my_path.index(u)
-                        curr_path = my_path[0:i+1]
-                        if verbose:
-                            print("starting a new path: {}".format(curr_path))
-                        if v not in curr_path:  # eliminate cycles
-                            curr_path.append(v)
-                            if verbose:
-                                print("added node: {}".format(curr_path))
-                            # recursive call to extend the path
-                            self.recover_paths(graph, v, source, paths, curr_path, max_path_length, verbose)
-
-
-
-    def find_shortest_paths(self, graph, source, target):
-        max_path_length = len(graph.keys())+1
+                    dist_v = dist_to_source.get(v)
+                    if dist_v >= alt_dist:
+                        dist_to_source[v] = alt_dist
+                        prev_in_path[v].append(u)
+        if verbose:
+            print("shortest paths tree:\n {}".format(prev_in_path))
         curr_path = [target]
         paths = []
-        self.recover_paths(graph, target, source, paths, curr_path, max_path_length)
-        #filter invalid paths
-        paths = [p for p in paths if (p[-1] == source and p[0] == target)]
-        #find the minimal length
-        min_length = len(graph.keys())+1
-        for p in paths:
-            path_length = len(p)
-            if path_length <= min_length:
-                min_length = path_length
-        # take the shortest paths and reverse them
-        paths = [p for p in paths if len(p) <= min_length]
+        self.construct_paths(prev_in_path, source, target, curr_path, paths, verbose)
         for p in paths:
             p.reverse()
         return paths
