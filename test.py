@@ -1,5 +1,7 @@
 import word_ladder_ii
 import plus_one
+import two_sum
+import sys
 
 
 def test_solution(solution, test_set, description):
@@ -9,11 +11,17 @@ def test_solution(solution, test_set, description):
         print(test_case)
         print("Solution:")
         print(solution(*test_case))
+#region two sum tests
+test_set = [[[1,2,7,3], 9], [[2,7,11,15], 9], [[3,2,4], 6], [[-3,4,3,90], 0], [[3,3],6], [[3,2,3],6]]
+solution = two_sum.Solution()
+test_solution(solution.twoSum, test_set, solution.description())
+sys.exit()
 
 #region plus_one tests
 test_set = [[[1,2,3]],[[4,3,2,1]]]
 solution = plus_one.Solution()
 test_solution(solution.plusOne, test_set, solution.description())
+
 #endregion
 #region word_ladder_ii tests
 test_set = [
@@ -25,9 +33,8 @@ test_set = [
 ["red", "tax", ["ted","red","tax","den","rex","pee"]],
 ["sand",
 "acne",
-["slit","bunk","wars","ping","viva","wynn","wows","irks","gang","pool","mock",
- "fort","heel","send","ship","cols","alec","foal","nabs","gaze","giza","mays",
- "dogs","karo","cums","jedi","webb","lend","mire","jose","catt","grow","toss",
+["slit","bunk","wars","ping","viva","wynn","wows","irks","gang","pool","mock","fort","heel","send","ship","cols","alec","foal","nabs","gaze","giza","mays",
+"dogs","karo","cums","jedi","webb","lend","mire","jose","catt","grow","toss",
  "magi","leis","bead","kara","hoof","than","ires","baas","vein","kari","riga",
  "oars","gags","thug","yawn","wive","view","germ","flab","july","tuck","rory",
  "bean","feed","rhee","jeez","gobs","lath","desk","yoko","cute","zeus","thus",
@@ -41,7 +48,15 @@ test_set = [
  "elms","deon","sims","quit","nest","font","dues","yeas","zeta","bevy","gent","torn","cups",
  "worm","baum","axon","purr","vise","grew","govs","meat","chef","rest","lame"]
 ]]
-
+'''
+[["sand","band","bind","bins","bids","aids","ands","ants","ante","anne","acne"],
+["sand","sans","sins","sims","aims","arms","arts","ants","ante","anne","acne"],
+["sand","sane","sine","side","aide","aids","ands","ants","ante","anne","acne"],
+["sand","sans","kans","kins","kids","aids","ands","ants","ante","anne","acne"],
+["sand","sans","sins","sims","aims","aids","ands","ants","ante","anne","acne"],
+["sand","sans","sins","sirs","airs","aids","ands","ants","ante","anne","acne"],["sand","band","bans","bins","bids","aids","ands","ants","ante","anne","acne"],["sand","sans","sins","bins","bids","aids","ands","ants","ante","anne","acne"],["sand","sane","sade","side","aide","aids","ands","ants","ante","anne","acne"],["sand","sans","sins","kins","kids","aids","ands","ants","ante","anne","acne"],
+["sand","sans","bans","bins","bids","aids","ands","ants","ante","anne","acne"]]
+'''
 solution = word_ladder_ii.Solution()
 test_solution(solution.findLadders, test_set, solution.description())
 #endregion
