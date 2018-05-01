@@ -11,7 +11,7 @@ def test_solution(solution, test_set, description):
         print(solution(*test_case))
 
 #region plus_one tests
-test_set = [[1,2,3],[4,3,2,1]]
+test_set = [[[1,2,3]],[[4,3,2,1]]]
 solution = plus_one.Solution()
 test_solution(solution.plusOne, test_set, solution.description())
 #endregion
@@ -41,14 +41,7 @@ test_set = [
  "elms","deon","sims","quit","nest","font","dues","yeas","zeta","bevy","gent","torn","cups",
  "worm","baum","axon","purr","vise","grew","govs","meat","chef","rest","lame"]
 ]]
-'''
-Output:
-[["red","ted","tex","tax"],["red","ted","tad","tax"]]
-Expected:
-[["red","ted","tad","tax"],["red","ted","tex","tax"],["red","rex","tex","tax"]]
-'''
 
-test_set = [test_set[-1]]
 solution = word_ladder_ii.Solution()
 test_solution(solution.findLadders, test_set, solution.description())
 #endregion
