@@ -1,6 +1,7 @@
 import word_ladder_ii
 import plus_one
 import two_sum
+import median_of_two_sorted_arrays
 import sys
 
 
@@ -11,18 +12,32 @@ def test_solution(solution, test_set, description):
         print(test_case)
         print("Solution:")
         print(solution(*test_case))
+
+
+
+
+#region two sum tests
+test_set = [[[1,2],[]], [[1, 3], [2]], [[1,2],[3,4]], [[],[]], [[1,2,2], [1]],
+            [[1],[2,3,4]], [[2], [1,3,4]], [[2,2,5,7], [1,3,4,6]], [[1,3,4,6], [2,2,5,7]], [[3], [1,2,4]], [[1,3,4,6], [2,5,7]],
+            [[1], [2,3,4,5]], [[1,3,4,30,32,33,34], [2,5]], [[1,3,10,11,12,16],[2,4,5,20,21]], [[1], [2,3,4,5,6,7,8,9]], [[4], [1,2,3]], [[5], [1,2,3,4]]]
+#test_set = [test_set[-1]]
+solution = median_of_two_sorted_arrays.Solution()
+test_solution(solution.findMedianSortedArrays, test_set, solution.description())
+sys.exit()
+#endregion
+
 #region two sum tests
 test_set = [[[1,2,7,3], 9], [[2,7,11,15], 9], [[3,2,4], 6], [[-3,4,3,90], 0], [[3,3],6], [[3,2,3],6]]
 solution = two_sum.Solution()
 test_solution(solution.twoSum, test_set, solution.description())
-sys.exit()
+#endregion
 
 #region plus_one tests
 test_set = [[[1,2,3]],[[4,3,2,1]]]
 solution = plus_one.Solution()
 test_solution(solution.plusOne, test_set, solution.description())
-
 #endregion
+
 #region word_ladder_ii tests
 test_set = [
     ["hit","cog",["hot","dot","dog","lot","log","cog"]],
