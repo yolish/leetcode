@@ -44,44 +44,51 @@ class Solution(object):
         elif n==0:
             median, indices = self.get_median(nums1)
         else:
-            is_single_median = (m+n)%2 == 1
+            m_orig = m
+            n_orig = n
             med1, indices1 = self.get_median(nums1)
             med2, indices2 = self.get_median(nums2)
-            med_of_med = (med1*m+med2*n)/(m+n)
+            med_of_med = (med1*m+med2*n)*1.0/(m+n)
             while m > 2 or n > 2:
                 med1, indices1 = self.get_median(nums1)
                 med2, indices2 = self.get_median(nums2)
+                if med1 == med_of_med or med2 == med_of_med:
+                    return med_of_med
                 nums1 = self.split(nums1, indices1, med1 > med_of_med)
                 nums2 = self.split(nums2, indices2, med2 > med_of_med)
                 m = len(nums1)
                 n = len(nums2)
 
-            nums = sorted(nums1+nums2)
-            median, indices = self.get_median(nums)
-            if is_single_median and len(nums)%2 == 0:
-                diff1 = abs(nums[indices[0]]-med_of_med)
-                diff2 = abs(nums[indices[1]]-med_of_med)
-                if diff1 < diff2:
-                    median = nums[indices[0]]
-                else:
-                    median = nums[indices[1]]
-            elif not is_single_median and len(nums)%2 == 1:
-                diff = [abs(elem-med_of_med) for elem in nums]
-                sorted_diff = sorted(diff)
-                indices = []
-                found_indices = False
-                for sval in sorted_diff:
-                    for i, val in enumerate(diff):
-                        if val == sval:
-                            indices.append(i)
-                        if len(indices) == 2:
-                            found_indices = True
-                            break
-                    if found_indices:
+            nums = nums1+nums2
+            weights = m*[m_orig] + n*[n_orig]
+            is_single_median = (m_orig + n_orig) % 2 == 1
+            diff = [abs(elem - med_of_med) for elem in nums]
+            sorted_diff = sorted(diff)
+            candidates = []
+            found_candidates = False
+            for sval in sorted_diff:
+                for i, val in enumerate(diff):
+                    if val == sval:
+                        candidates.append(i)
+                    if len(candidates) == 2:
+                        found_candidates = True
                         break
-                median_elems = [nums[index] for index in indices]
-                median = sum(median_elems)/2.0
+                if found_candidates:
+                    break
+            med1 = nums[candidates[0]]
+            med2 = nums[candidates[1]]
+            if not is_single_median:
+                median = (med1+med2)/2.0
+            else:
+                w1 = weights[candidates[0]]
+                w2 = weights[candidates[1]]
+                med_of_candidates = (w1*med1+w2*med2)*1.0/(w1+w2)
+                if med_of_candidates > med_of_med:
+                    median = min(med1,med2)
+                else:
+                    median = max(med1, med2)
         return median*1.0
+
 
 
 
