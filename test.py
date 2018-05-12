@@ -8,6 +8,7 @@ import hamming_distance
 import judge_route_circle
 import self_dividing_numbers
 import array_partition_i
+import number_of_lines_to_write_string
 import sys
 
 
@@ -18,6 +19,12 @@ def test_solution(solution, test_set, description):
         print(test_case)
         print("Solution:")
         print(solution(*test_case))
+
+
+solution = number_of_lines_to_write_string.Solution()
+test_set = [[[4,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10], "bbbcccdddaaa"]]
+test_solution(solution.numberOfLines, test_set, solution.description())
+sys.exit()
 
 solution = array_partition_i.Solution()
 test_set = [[[1,2,3,4]],[[-100, 0, 6, 5, 2, 3]]]
