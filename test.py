@@ -5,6 +5,7 @@ import median_of_two_sorted_arrays
 import jewels_and_stones
 import unique_morse_code_words
 import hamming_distance
+import judge_route_circle
 import sys
 
 
@@ -16,6 +17,11 @@ def test_solution(solution, test_set, description):
         print("Solution:")
         print(solution(*test_case))
 
+
+solution = judge_route_circle.Solution()
+test_set = [["UD"], ["LL"], ["UDUDUDUDLLRRU"]]
+test_solution(solution.judgeCircle, test_set, solution.description())
+sys.exit()
 
 solution = hamming_distance.Solution()
 test_set = [[1,4],[0,1],[1577962638,1727613287]]
