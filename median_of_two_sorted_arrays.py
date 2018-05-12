@@ -1,4 +1,6 @@
 #https://leetcode.com/problems/median-of-two-sorted-arrays/description/
+#import numpy as np
+#import math
 
 class Solution(object):
 
@@ -31,6 +33,20 @@ class Solution(object):
             l = l[start_index:end_index]
         return l
 
+    def update_n_smaller(self, n_smaller_than, nums, indices, n):
+        shift = 0
+        if len(indices) == 2:
+            shift = 1
+        for i, index in enumerate(indices):
+            val = nums[index]
+            my_n_elem = n/2+i-shift
+            n_elem =  n_smaller_than.get(val)
+            if  n_elem is None:
+                n_smaller_than[val] = my_n_elem
+            else:
+                n_smaller_than[val] = max(n_elem, my_n_elem)
+
+
     def findMedianSortedArrays(self, nums1, nums2):
         """
         :type nums1: List[int]
@@ -39,56 +55,64 @@ class Solution(object):
         """
         m = len(nums1)
         n = len(nums2)
+        #mtrue= np.median(sorted(nums1 + nums2))
+        #print mtrue
         if m==0:
             median, indices = self.get_median(nums2)
         elif n==0:
             median, indices = self.get_median(nums1)
         else:
-            m_orig = m
-            n_orig = n
+            k = m+n
             med1, indices1 = self.get_median(nums1)
             med2, indices2 = self.get_median(nums2)
-            med_of_med = (med1*m+med2*n)*1.0/(m+n)
-            while m > 2 or n > 2:
+            n_smaller_than = {}
+            self.update_n_smaller(n_smaller_than, nums1, indices1, m)
+            self.update_n_smaller(n_smaller_than, nums2, indices2, n)
+            med_of_med =(med1*m+med2*n)*1.0/(m+n)
+            while m+n > 4:
                 med1, indices1 = self.get_median(nums1)
                 med2, indices2 = self.get_median(nums2)
-                if med1 == med_of_med or med2 == med_of_med:
-                    return med_of_med
                 nums1 = self.split(nums1, indices1, med1 > med_of_med)
                 nums2 = self.split(nums2, indices2, med2 > med_of_med)
+                self.update_n_smaller(n_smaller_than, nums1, indices1, m)
+                self.update_n_smaller(n_smaller_than, nums2, indices2, n)
                 m = len(nums1)
                 n = len(nums2)
-
-            nums = nums1+nums2
-            weights = m*[m_orig] + n*[n_orig]
-            is_single_median = (m_orig + n_orig) % 2 == 1
-            diff = [abs(elem - med_of_med) for elem in nums]
-            sorted_diff = sorted(diff)
-            candidates = []
-            found_candidates = False
-            for sval in sorted_diff:
-                for i, val in enumerate(diff):
-                    if val == sval:
-                        candidates.append(i)
-                    if len(candidates) == 2:
-                        found_candidates = True
-                        break
-                if found_candidates:
-                    break
-            med1 = nums[candidates[0]]
-            med2 = nums[candidates[1]]
-            if not is_single_median:
-                median = (med1+med2)/2.0
-            else:
-                w1 = weights[candidates[0]]
-                w2 = weights[candidates[1]]
-                med_of_candidates = (w1*med1+w2*med2)*1.0/(w1+w2)
-                if med_of_candidates > med_of_med:
-                    median = min(med1,med2)
+            median = None
+            nums = sorted(nums1+nums2)
+            last_n_smaller = 0
+            is_single_median = k%2 == 1
+            for val1 in nums1:
+                for val2 in nums2:
+                    val_to_update = None
+                    if val1 > val2:
+                        val_to_update = val1
+                    elif val2 >= val1:
+                        val_to_update = val2
+                    if val_to_update is not None:
+                        n_elem = n_smaller_than.get(val_to_update)
+                        if n_elem is None:
+                            n_smaller_than[val_to_update] = 1
+                        else:
+                            n_smaller_than[val_to_update] = n_elem+1
+            for i, val in enumerate(nums):
+                n_elem_smaller_than = n_smaller_than.get(val)
+                if n_elem_smaller_than is not None and n_elem_smaller_than > 0:
+                    last_n_smaller = n_elem_smaller_than + last_n_smaller
                 else:
-                    median = max(med1, med2)
+                    if i > 0:
+                        last_n_smaller = last_n_smaller + 1
+                if i > 0:
+                    if is_single_median and last_n_smaller >= (k/2):
+                            median = val
+                            break
+                    if not is_single_median and last_n_smaller >= k/2 -1:
+                            if i < len(nums)-1:
+                                median = (val + nums[i+1])/2.0
+                            else:
+                                median = (val + nums[i-1])/2.0
+                            break
+            if median is None:
+                median, indices = self.get_median(nums)
+
         return median*1.0
-
-
-
-
