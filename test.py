@@ -3,6 +3,7 @@ import plus_one
 import two_sum
 import median_of_two_sorted_arrays
 import jewels_and_stones
+import unique_morse_code_words
 import sys
 
 
@@ -16,11 +17,16 @@ def test_solution(solution, test_set, description):
 
 
 
+solution = unique_morse_code_words.Solution()
+test_set = [[["gin", "zen", "gig", "msg"]], [[]], [["gig", "msg"]]]
+test_solution(solution.uniqueMorseRepresentations, test_set, solution.description())
+sys.exit()
+
 
 solution = jewels_and_stones.Solution()
 test_set = [["aA","aAAbbbb"], ["z","ZZ"], ["",""],["g",""], ["asdg","jhkjgjgfhjhg"]]
 test_solution(solution.numJewelsInStones, test_set, solution.description())
-sys.exit()
+
 
 #region median of two sorted array
 test_set = [[[1,2],[]], [[1, 3], [2]], [[1,2],[3,4]], [[],[]], [[1,2,2], [1]],
