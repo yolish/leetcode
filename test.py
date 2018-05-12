@@ -4,6 +4,7 @@ import two_sum
 import median_of_two_sorted_arrays
 import jewels_and_stones
 import unique_morse_code_words
+import hamming_distance
 import sys
 
 
@@ -16,11 +17,15 @@ def test_solution(solution, test_set, description):
         print(solution(*test_case))
 
 
+solution = hamming_distance.Solution()
+test_set = [[1,4],[0,1],[1577962638,1727613287]]
+test_solution(solution.hammingDistance, test_set, solution.description())
+sys.exit()
+
 
 solution = unique_morse_code_words.Solution()
 test_set = [[["gin", "zen", "gig", "msg"]], [[]], [["gig", "msg"]]]
 test_solution(solution.uniqueMorseRepresentations, test_set, solution.description())
-sys.exit()
 
 
 solution = jewels_and_stones.Solution()
