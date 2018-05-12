@@ -6,6 +6,8 @@ import jewels_and_stones
 import unique_morse_code_words
 import hamming_distance
 import judge_route_circle
+import self_dividing_numbers
+import array_partition_i
 import sys
 
 
@@ -16,6 +18,17 @@ def test_solution(solution, test_set, description):
         print(test_case)
         print("Solution:")
         print(solution(*test_case))
+
+solution = array_partition_i.Solution()
+test_set = [[[1,2,3,4]],[[-100, 0, 6, 5, 2, 3]]]
+test_solution(solution.arrayPairSum, test_set, solution.description())
+sys.exit()
+
+
+solution = self_dividing_numbers.Solution()
+test_set = [[1,22], [2,1000]]
+test_solution(solution.selfDividingNumbers, test_set, solution.description())
+sys.exit()
 
 
 solution = judge_route_circle.Solution()
