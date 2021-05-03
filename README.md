@@ -1,2 +1,2 @@
 # leetcode
-Solutions and test cases for LeetCode problems, focusing on the ALgorithms category
+Solutions and test cases for LeetCode problems, focusing on the Algorithms category
